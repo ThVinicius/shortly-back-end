@@ -32,8 +32,8 @@ export async function signIn(_, res) {
 
     await connection.query(
       `INSERT INTO 
-        sessions (customer_id, token) VALUES ($1, $2) 
-        ON CONFLICT (customer_id) 
+        sessions ("customerId", token) VALUES ($1, $2) 
+        ON CONFLICT ("customerId") 
         DO UPDATE SET token = EXCLUDED.token`,
       [customer.id, token]
     )

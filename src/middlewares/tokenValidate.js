@@ -27,7 +27,7 @@ export default async function tokenValidate(req, res, next) {
 
     if (customerSession.length === 0) return res.sendStatus(404)
 
-    res.locals.customer_id = customerSession[0].customer_id
+    res.locals.customerId = customerSession[0].customerId
 
     next()
   } catch (error) {

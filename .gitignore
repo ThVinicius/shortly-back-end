@@ -3,3 +3,5 @@
 .wakatime-project
 
 .env
+
+create table shortly.sql
