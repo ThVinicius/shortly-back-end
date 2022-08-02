@@ -1,7 +1,7 @@
 import joi from 'joi'
 
-const AddUrlSchema = joi.object({
+const createUrlSchema = joi.object({
   url: joi.string().uri().required()
 })
 
-export default AddUrlSchema
+export default createUrlSchema

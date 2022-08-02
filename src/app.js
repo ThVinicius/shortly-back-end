@@ -2,7 +2,7 @@ import express, { json } from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import authRoute from './routes/authRoute.js'
-// import { nanoid } from 'nanoid'
+import customersRoute from './routes/customersRoute.js'
 
 const app = express()
 
@@ -12,9 +12,6 @@ app.use(json())
 dotenv.config()
 
 app.use(authRoute)
-
-// app.post('/teste', async (req, res) => {
-//    const teste = nanoid(9)
-// })
+app.use(customersRoute)
 
 app.listen(process.env.PORT)
