@@ -38,3 +38,50 @@ export async function getUrlById(req, res) {
     return res.status(500).send(error)
   }
 }
+
+export async function openUrl(_, res) {
+  const { url } = res.locals
+
+  return res.redirect(url)
+}
+
+export async function deleteUrl(req, res) {
+  try {
+    const { customerId } = res.locals
+
+    const { id } = req.params
+
+    const { rowCount } = await connection.query(
+      'DELETE FROM urls WHERE "customerId" = $1 AND id = $2',
+      [customerId, id]
+    )
+
+    if (rowCount === 0) return res.sendStatus(404)
+
+    return res.sendStatus(204)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send(error)
+  }
+}
+
+export async function getRanking(_, res) {
+  try {
+    const { rows: ranking } = await connection.query(`
+      SELECT 
+        c.id, c.name, 
+        COUNT("customerId")::INTEGER AS "linksCount", 
+        COALESCE(SUM(views), 0)::INTEGER AS "visitCount" 
+      FROM customers c
+      LEFT JOIN urls u ON c.id = u."customerId"
+      GROUP BY c.id
+      ORDER BY "visitCount" DESC, "linksCount" DESC
+      LIMIT 10
+    `)
+
+    return res.status(200).send(ranking)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send(error)
+  }
+}
