@@ -51,12 +51,10 @@ export async function deleteUrl(req, res) {
 
     const { id } = req.params
 
-    const { rowCount } = await connection.query(
+    await connection.query(
       'DELETE FROM urls WHERE "customerId" = $1 AND id = $2',
       [customerId, id]
     )
-
-    if (rowCount === 0) return res.sendStatus(404)
 
     return res.sendStatus(204)
   } catch (error) {
@@ -65,7 +63,7 @@ export async function deleteUrl(req, res) {
   }
 }
 
-export async function getUrlsByCustomer(req, res) {
+export async function getUrlsByCustomer(_, res) {
   try {
     const { customerId } = res.locals
 

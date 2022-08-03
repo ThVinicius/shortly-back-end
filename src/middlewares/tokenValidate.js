@@ -7,7 +7,6 @@ export default async function tokenValidate(req, res, next) {
   if (error) {
     switch (error.details[0].message) {
       case '"value" is required':
-        console.log('value" is required')
         return res.sendStatus(401)
 
       default:
