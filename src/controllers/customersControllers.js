@@ -65,6 +65,34 @@ export async function deleteUrl(req, res) {
   }
 }
 
+export async function getUrlsByCustomer(req, res) {
+  try {
+    const { customerId } = res.locals
+
+    const { rows: urlsById } = await connection.query(
+      `
+    SELECT 
+    c.id, c.name, SUM(views) AS "visitCount", 
+    JSON_AGG(
+      JSON_BUILD_OBJECT(
+        'id', c.id, 'shortUrl', "shortUrl", 'url', url, 'visitCount', views
+      )
+    ) AS "shortenedUrls"
+    FROM customers c 
+    JOIN urls u ON c.id = u."customerId"
+    WHERE c.id = $1
+    GROUP BY c.id
+    `,
+      [customerId]
+    )
+
+    return res.status(200).send(urlsById)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send(error)
+  }
+}
+
 export async function getRanking(_, res) {
   try {
     const { rows: ranking } = await connection.query(`
