@@ -3,9 +3,17 @@ import connection from '../database/postgreSQL.js'
 import bcrypt from 'bcrypt'
 
 export default async function loginValidate(req, res, next) {
-  const { error } = loginSchema.validate(req.body)
+  const { error } = loginSchema.validate(req.body, { abortEarly: false })
 
-  if (error) return res.sendStatus(400)
+  if (error) {
+    const message = []
+
+    for (const err of error.details) {
+      message.push(err.message)
+    }
+
+    return res.status(422).send(message)
+  }
 
   try {
     const { email, password } = req.body

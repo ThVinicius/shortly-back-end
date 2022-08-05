@@ -16,7 +16,10 @@ export async function signUp(req, res) {
     return res.sendStatus(201)
   } catch (error) {
     console.log(error)
-    return res.status(500).send(error)
+
+    if (error.code === '23505') return res.status(409).send(error.detail)
+
+    return res.status(500).send(error.detail)
   }
 }
 
@@ -27,8 +30,6 @@ export async function signIn(_, res) {
     const secretKey = process.env.JWT_SECRET
 
     const token = jwt.sign(customer, secretKey)
-
-    console.log(token)
 
     await connection.query(
       `INSERT INTO 

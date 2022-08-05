@@ -73,7 +73,7 @@ export async function getUrlsByCustomer(_, res) {
     c.id, c.name, SUM(views) AS "visitCount", 
     JSON_AGG(
       JSON_BUILD_OBJECT(
-        'id', c.id, 'shortUrl', "shortUrl", 'url', url, 'visitCount', views
+        'id', u.id, 'shortUrl', "shortUrl", 'url', url, 'visitCount', views
       )
     ) AS "shortenedUrls"
     FROM customers c 
@@ -84,7 +84,7 @@ export async function getUrlsByCustomer(_, res) {
       [customerId]
     )
 
-    return res.status(200).send(urlsById)
+    return res.status(200).send(urlsById[0])
   } catch (error) {
     console.log(error)
     return res.status(500).send(error)
