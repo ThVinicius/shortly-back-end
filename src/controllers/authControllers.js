@@ -1,6 +1,7 @@
-import connection from '../database/postgreSQL.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import sessionsRepositories from '../repositories/sessionsRepositories.js'
+import customerRepositories from '../repositories/customerRepositories.js'
 
 export async function signUp(req, res) {
   try {
@@ -8,10 +9,7 @@ export async function signUp(req, res) {
 
     const cryptPassword = bcrypt.hashSync(password, 10)
 
-    await connection.query(
-      'INSERT INTO customers (name, email, password) VALUES ($1, $2, $3)',
-      [name, email, cryptPassword]
-    )
+    customerRepositories.insert(name, email, cryptPassword)
 
     return res.sendStatus(201)
   } catch (error) {
@@ -33,13 +31,7 @@ export async function signIn(_, res) {
 
     const token = jwt.sign(customer, secretKey, config)
 
-    await connection.query(
-      `INSERT INTO 
-        sessions ("customerId", token) VALUES ($1, $2) 
-        ON CONFLICT ("customerId") 
-        DO UPDATE SET token = EXCLUDED.token`,
-      [customer.id, token]
-    )
+    await sessionsRepositories.insert(customer.id, token)
 
     return res.status(200).send(token)
   } catch (error) {

@@ -1,6 +1,6 @@
-import connection from '../database/postgreSQL.js'
-import tokenSchema from '../schemas/tokenSchema.js'
 import jwt from 'jsonwebtoken'
+import tokenSchema from '../schemas/tokenSchema.js'
+import sessionsRepositories from '../repositories/sessionsRepositories.js'
 
 export default async function tokenValidate(req, res, next) {
   const { error } = tokenSchema.validate(req.headers.authorization)
@@ -16,9 +16,8 @@ export default async function tokenValidate(req, res, next) {
 
     const data = jwt.verify(token, secretKey)
 
-    const { rows: customerSession } = await connection.query(
-      'SELECT * FROM sessions WHERE token = $1 LIMIT 1',
-      [token]
+    const { rows: customerSession } = await sessionsRepositories.getByToken(
+      token
     )
 
     if (customerSession.length === 0) return res.sendStatus(426)

@@ -1,5 +1,6 @@
-import connection from '../database/postgreSQL.js'
 import { nanoid } from 'nanoid'
+import urlsRepositories from '../repositories/urlsRepositories.js'
+import customerRepositories from '../repositories/customerRepositories.js'
 
 export async function createUrl(req, res) {
   try {
@@ -9,10 +10,7 @@ export async function createUrl(req, res) {
 
     const shortUrl = nanoid(9)
 
-    await connection.query(
-      'INSERT INTO urls (url, "shortUrl", "customerId") VALUES ($1, $2, $3)',
-      [url, shortUrl, customerId]
-    )
+    await urlsRepositories.insert(url, shortUrl, customerId)
 
     return res.status(201).send({ shortUrl })
   } catch (error) {
@@ -30,10 +28,7 @@ export async function getUrlById(req, res) {
   try {
     const { id } = req.params
 
-    const { rows: url } = await connection.query(
-      'SELECT * FROM urls WHERE id = $1',
-      [id]
-    )
+    const { rows: url } = await urlsRepositories.getById(id)
 
     if (url.length === 0) return res.sendStatus(404)
 
@@ -56,10 +51,7 @@ export async function deleteUrl(req, res) {
 
     const { id } = req.params
 
-    await connection.query(
-      'DELETE FROM urls WHERE "customerId" = $1 AND id = $2',
-      [customerId, id]
-    )
+    await urlsRepositories.deleteOne(customerId, id)
 
     return res.sendStatus(204)
   } catch (error) {
@@ -72,21 +64,8 @@ export async function getUrlsByCustomer(_, res) {
   try {
     const { customerId } = res.locals
 
-    const { rows: urlsById } = await connection.query(
-      `
-    SELECT 
-    c.id, c.name, COALESCE(SUM("visitCount"), 0)::INTEGER AS "visitCount", 
-    COALESCE(JSON_AGG(
-      JSON_BUILD_OBJECT(
-        'id', u.id, 'shortUrl', "shortUrl", 'url', url, 'visitCount', "visitCount"
-      )
-    ) FILTER (WHERE u.id IS NOT NULL),'[]') AS "shortenedUrls"
-    FROM customers c 
-    LEFT JOIN urls u ON c.id = u."customerId"
-    WHERE c.id = $1
-    GROUP BY c.id
-    `,
-      [customerId]
+    const { rows: urlsById } = await customerRepositories.getLinksById(
+      customerId
     )
 
     return res.status(200).send(urlsById[0])
@@ -98,17 +77,7 @@ export async function getUrlsByCustomer(_, res) {
 
 export async function getRanking(_, res) {
   try {
-    const { rows: ranking } = await connection.query(`
-      SELECT 
-        c.id, c.name, 
-        COUNT("customerId")::INTEGER AS "linksCount", 
-        COALESCE(SUM("visitCount"), 0)::INTEGER AS "visitCount" 
-      FROM customers c
-      LEFT JOIN urls u ON c.id = u."customerId"
-      GROUP BY c.id
-      ORDER BY "visitCount" DESC, "linksCount" DESC
-      LIMIT 10
-    `)
+    const { rows: ranking } = await customerRepositories.getRanking()
 
     return res.status(200).send(ranking)
   } catch (error) {

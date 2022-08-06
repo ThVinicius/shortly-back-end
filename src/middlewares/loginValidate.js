@@ -1,6 +1,6 @@
 import loginSchema from '../schemas/loginSchema.js'
-import connection from '../database/postgreSQL.js'
 import bcrypt from 'bcrypt'
+import customerRepositories from '../repositories/customerRepositories.js'
 
 export default async function loginValidate(req, res, next) {
   const { error } = loginSchema.validate(req.body, { abortEarly: false })
@@ -18,10 +18,7 @@ export default async function loginValidate(req, res, next) {
   try {
     const { email, password } = req.body
 
-    const { rows: customer } = await connection.query(
-      'SELECT * FROM customers WHERE email = $1 LIMIT 1',
-      [email]
-    )
+    const { rows: customer } = await customerRepositories.getByEmail(email)
 
     if (customer.length === 0) return res.sendStatus(401)
 
