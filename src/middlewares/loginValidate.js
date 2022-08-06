@@ -29,6 +29,8 @@ export default async function loginValidate(req, res, next) {
 
     if (!compare) return res.sendStatus(401)
 
+    delete customer[0].password
+
     res.locals.customer = customer[0]
 
     next()

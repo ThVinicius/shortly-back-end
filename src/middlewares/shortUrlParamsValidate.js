@@ -7,7 +7,7 @@ export default async function shortUrlParamsValidate(req, res, next) {
   if (error) return res.sendStatus(400)
 
   const { rows: url } = await connection.query(
-    'UPDATE urls SET views = views + 1 WHERE "shortUrl" = $1 RETURNING url',
+    'UPDATE urls SET "visitCount" = "visitCount" + 1 WHERE "shortUrl" = $1 RETURNING url',
     [req.params.shortUrl]
   )
 

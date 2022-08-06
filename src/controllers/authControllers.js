@@ -29,7 +29,9 @@ export async function signIn(_, res) {
 
     const secretKey = process.env.JWT_SECRET
 
-    const token = jwt.sign(customer, secretKey)
+    const config = { expiresIn: 60 * 60 * 24 * 30 }
+
+    const token = jwt.sign(customer, secretKey, config)
 
     await connection.query(
       `INSERT INTO 
