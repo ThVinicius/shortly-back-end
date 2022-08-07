@@ -6,7 +6,7 @@ export default async function checkUrlByCustomer(req, res, next) {
   const { customerId } = res.locals
 
   try {
-    const { rows: url } = urlsRepositories.getById(id)
+    const { rows: url } = await urlsRepositories.getById(id)
 
     if (url.length === 0) return res.sendStatus(404)
 
