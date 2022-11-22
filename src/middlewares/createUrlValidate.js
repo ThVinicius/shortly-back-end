@@ -10,7 +10,7 @@ export default function createUrlValidate(req, res, next) {
       message.push(err.message)
     }
 
-    return res.status(422).send(message)
+    return res.status(400).send(message)
   }
 
   next()
