@@ -31,8 +31,8 @@
     - [Deletar um link](#delete-url)
     - [Buscar os links do usuário](#get-all-url-user)
     - [Buscar ranking](#get-ranking)
-  - [Environment Variables](#environment-variables)
-  - [Run Locally](#run-locally)
+- [Environment Variables](#environment-variables)
+- [Run Locally](#run-locally)
 
 <div id='description'/>
 
@@ -46,6 +46,7 @@ Shortly é um sistema de encurtador de URLs
 
 - Criar uma conta e acessa-la.
 - Criar um link encurtado
+- Acessar um link encurtado
 - Visualizar o ranking de usuários com mais links e com mais visitas
 
 </br>
@@ -235,13 +236,6 @@ Enviar por params
 | :--------- | :------- | :--------------------------- |
 | `shortUrl` | `string` | **required**, **length (9)** |
 
-<h4>Headers:</h4>
-Envio do token (Bearer token)
-
-| Params          | Type     | Description                            |
-| :-------------- | :------- | :------------------------------------- |
-| `Authorization` | `string` | **required**, **Starting with Bearer** |
-
 <h3>Response:</h3>
 
 <h3>Error cases:</h3>
@@ -308,7 +302,7 @@ GET /users/me
 <h3>Request:</h3>
 
 <h4>Headers:</h4>
-Send the token (Bearer token)
+Envio do token (Bearer token)
 
 | Params          | Type     | Description                            |
 | :-------------- | :------- | :------------------------------------- |
