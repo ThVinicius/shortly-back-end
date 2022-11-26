@@ -14,4 +14,6 @@ dotenv.config()
 app.use(authRoute)
 app.use(customersRoute)
 
-app.listen(process.env.PORT)
+const PORT = process.env.PORT || 4000
+
+app.listen(PORT, () => console.log(`Server funcionando na porta ${PORT}`))
