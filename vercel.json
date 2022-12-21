@@ -1,0 +1,17 @@
+{
+  "name": "shortly-back-end",
+  "version": 2,
+  "public": true,
+  "build": [
+      {
+          "src": "./src/app.js",
+          "use": "@vercel/node"
+      }
+  ],
+  "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "./src/app.js"
+      }
+  ]
+}
