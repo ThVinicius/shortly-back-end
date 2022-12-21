@@ -2,7 +2,7 @@
   "name": "shortly-back-end",
   "version": 2,
   "public": true,
-  "build": [
+  "builds": [
       {
           "src": "./src/app.js",
           "use": "@vercel/node"
